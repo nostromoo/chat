@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/activity_main"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+>
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/recyclerView"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_marginBottom="50dp"
+  />
+  <android.support.constraint.ConstraintLayout
+    android:id="@+id/inputContainer"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:background="@color/lightGrey"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+  >
+    <EditText
+      android:id="@+id/input"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:hint="Enter you message here"
+      android:padding="10dp"
+      android:textColor="@color/colorAccent"
+      android:textColorHint="@color/black50"
+      android:textCursorDrawable="@null"
+      app:layout_constraintEnd_toStartOf="@id/send"
+      app:layout_constraintStart_toStartOf="parent"
+    />
+    <ImageView
+      android:id="@+id/send"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="10dp"
+      android:src="@drawable/ic_baseline_send_24px"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+    />
+  </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>
