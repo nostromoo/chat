@@ -2,7 +2,6 @@ package com.muzmatch.chat
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,24 +21,19 @@ class ChatAdapter(private val messages: ArrayList<Message>) :
   class MessageViewHolder(val view: View) : RecyclerView.ViewHolder(view)
   {
 
-    fun bind(message: Message, hasSection: Boolean, hasTail: Boolean)
+    fun bind(message: Message, hasTail: Boolean, hasSection : Boolean)
     {
-      val tail = if (hasTail) "tail" else ""
-      view.message.text = "${message.payload}$tail"
-      val lp: FrameLayout.LayoutParams = view.message.layoutParams as FrameLayout.LayoutParams
+      view.message.text = message.payload
+      view.message.setTextColor(ContextCompat.getColor(view.context, message.getTextColor()))
+      view.message.setBackgroundResource(message.getBackground(hasTail))
+      val (start, end) = message.getPadding(hasTail)
+      view.message.setPadding(view.resources.getDimensionPixelSize(start),
+          view.resources.getDimensionPixelSize(R.dimen.dimen5dip),
+          view.resources.getDimensionPixelSize(end),
+          view.resources.getDimensionPixelSize(R.dimen.dimen5dip))
 
-      if (message.isMe)
-      {
-        view.message.setTextColor(ContextCompat.getColor(view.context, android.R.color.white))
-        view.message.setBackgroundResource(R.drawable.bg_message_me)
-        lp.gravity = Gravity.END
-      }
-      else
-      {
-        view.message.setTextColor(ContextCompat.getColor(view.context, android.R.color.black))
-        view.message.setBackgroundResource(R.drawable.bg_message_not_me)
-        lp.gravity = Gravity.START
-      }
+      val lp: FrameLayout.LayoutParams = view.message.layoutParams as FrameLayout.LayoutParams
+      lp.gravity = message.getGravity()
       view.message.layoutParams = lp
 
       if (hasSection)
@@ -59,7 +53,7 @@ class ChatAdapter(private val messages: ArrayList<Message>) :
   {
     val hasSection = position == 0 || messages[position].hasSection(messages[position - 1])
     val hasTail = position == itemCount - 1 || messages[position].hasTail(messages[position + 1])
-    holder.bind(messages[position], hasSection, hasTail)
+    holder.bind(messages[position], hasTail, hasSection)
   }
 
   override fun onCreateViewHolder(parent: ViewGroup,

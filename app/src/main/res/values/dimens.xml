@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Generic dimension sizes, per the Smart&Soft Design guidelines. -->
+  <dimen name="dimen5dip">5dip</dimen>
+  <dimen name="dimen10dip">10dip</dimen>
+  <dimen name="dimen20dip">30dip</dimen>
+</resources>
