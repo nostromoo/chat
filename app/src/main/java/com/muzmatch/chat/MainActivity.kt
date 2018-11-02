@@ -1,11 +1,14 @@
 package com.muzmatch.chat
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.graphics.Point
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.DisplayMetrics
 import android.view.View
-import android.view.Window
 import android.widget.TextView
 import com.muzmatch.chat.bo.Message
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,7 +22,6 @@ class MainActivity
     View.OnClickListener
 {
 
-
   override fun onCreate(savedInstanceState: Bundle?)
   {
     super.onCreate(savedInstanceState)
@@ -28,16 +30,6 @@ class MainActivity
     initList()
 
     send.setOnClickListener(this)
-
-    activity_main.viewTreeObserver.addOnGlobalLayoutListener {
-      val heightDiff = activity_main.rootView.height - activity_main.height
-      val contentViewTop = window.findViewById<View>(Window.ID_ANDROID_CONTENT).top
-
-      if (heightDiff > contentViewTop)
-      {
-        recyclerView.scrollToPosition(recyclerView.adapter.itemCount - 1)
-      }
-    }
   }
 
   override fun onClick(v: View?)
@@ -46,33 +38,11 @@ class MainActivity
     {
       if (input.text.isNotEmpty())
       {
-
-//        val newMessage = createNewMessage(Message(input.text.toString(), System.currentTimeMillis(), true, true))
-
-
-        //        val (anim1X, anim1Y) = SpringAnimation(newMessage, DynamicAnimation.TRANSLATION_X, 500f) to
-        //            SpringAnimation(newMessage, DynamicAnimation.TRANSLATION_Y, recyclerView.bottom.toFloat())
-        //
-        //
-        //        anim1Y.addEndListener { animation, canceled, value, velocity ->
-        //          activity_main.removeView(newMessage)
-        //          (recyclerView.adapter as ChatAdapter).addItem(Message(input.text.toString(), System.currentTimeMillis(), true, true))
-        //          recyclerView.adapter.notifyDataSetChanged()
-        //          recyclerView.scrollToPosition(recyclerView.adapter.itemCount - 1)
-        //          input.text.clear()
-        //        }
-        //        anim1X.animateToFinalPosition()
-        //        ObjectAnimator.ofFloat(newMessage, "translationY", recyclerView.bottom.toFloat()).apply {
-        //        duration = 2000
-        //
-        //        start()
-        //      }
-        (recyclerView.adapter as ChatAdapter).addItem(Message(input.text.toString(), System.currentTimeMillis(), true))
-        recyclerView.adapter.notifyDataSetChanged()
-        recyclerView.scrollToPosition(recyclerView.adapter.itemCount - 1)
+        val message = Message(input.text.toString(), System.currentTimeMillis(), true)
         input.text.clear()
+        val newMessage = createNewMessage(message)
+        createAnimations(newMessage, message)
       }
-
     }
   }
 
@@ -82,25 +52,80 @@ class MainActivity
 
     val messages = arrayListOf(
         Message("Hey !", timestamp, false),
-        Message("Hello !", timestamp, true),
         Message("how are you ?", timestamp, false),
+        Message("Hello !", timestamp, true),
         Message("fine, what about you?", timestamp, true))
     recyclerView.layoutManager = LinearLayoutManager(this)
     recyclerView.adapter = ChatAdapter(messages)
   }
 
-  private fun createNewMessage(message: Message): TextView
+  private fun updateList(message: Message)
   {
+    (recyclerView.adapter as ChatAdapter).addItem(message)
+    recyclerView.adapter.notifyDataSetChanged()
+    recyclerView.scrollToPosition(recyclerView.adapter.itemCount - 1)
+    input.text.clear()
+  }
 
-    val textView = TextView(this@MainActivity).apply {
-      setBackgroundResource(R.drawable.bg_message_me_tail)
+  private fun createNewMessage(message: Message): View
+  {
+    val messageView = TextView(this).apply {
+      setBackgroundResource(message.getBackground(true))
+      val (start, end) = message.getPadding(true)
+      setPadding(resources.getDimensionPixelSize(start),
+          resources.getDimensionPixelSize(R.dimen.dimen5dip),
+          resources.getDimensionPixelSize(end),
+          resources.getDimensionPixelSize(R.dimen.dimen5dip))
       text = message.payload
       setTextColor(ContextCompat.getColor(this@MainActivity, android.R.color.white))
-
     }
-    activity_main.addView(textView)
-    textView.top = input.top
 
-    return textView
+    activity_main.addView(messageView)
+    messageView.y = inputContainer.y
+    messageView.measure(0, 0)
+
+    return messageView
+  }
+
+  private fun createAnimations(newMessage: View, message: Message)
+  {
+    val hasSection = recyclerView.adapter.itemCount == 0 || message.hasSection((recyclerView.adapter as ChatAdapter).messages[recyclerView.adapter.itemCount - 1])
+    val display = windowManager.defaultDisplay
+    val size = Point()
+    display.getSize(size)
+    val listBottom =  recyclerView.bottom
+    val finalYPosition = listBottom - resources.getDimensionPixelSize(R.dimen.dimen10dip) - (if (hasSection) resources.getDimensionPixelSize(R.dimen.dimen30dip) else 0) - resources.getDimensionPixelSize(R.dimen.dimen50dip)
+    ObjectAnimator.ofFloat(newMessage, "translationY", finalYPosition.toFloat()).apply {
+      duration = 1000
+      start()
+      addListener(object : Animator.AnimatorListener
+      {
+        override fun onAnimationEnd(a: Animator)
+        {
+          activity_main.removeView(newMessage)
+          updateList(message)
+        }
+
+        override fun onAnimationStart(a: Animator)
+        {
+
+        }
+
+        override fun onAnimationCancel(a: Animator)
+        {
+
+        }
+
+        override fun onAnimationRepeat(a: Animator)
+        {
+
+        }
+
+      })
+    }
+    ObjectAnimator.ofFloat(newMessage, "translationX", (size.x - newMessage.measuredWidth).toFloat()).apply {
+      duration = 1000
+      start()
+    }
   }
 }

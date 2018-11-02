@@ -14,7 +14,7 @@ import org.joda.time.DateTime
 /**
  * Created by Romain on 28/10/2018.
  */
-class ChatAdapter(private val messages: ArrayList<Message>) :
+class ChatAdapter(val messages: ArrayList<Message>) :
     RecyclerView.Adapter<ChatAdapter.MessageViewHolder>()
 {
 

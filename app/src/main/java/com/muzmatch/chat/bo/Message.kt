@@ -26,9 +26,9 @@ data class Message(val payload: String, val timestamp: Long, val isMe: Boolean)
   fun getPadding(hasTail:Boolean): Pair<Int, Int> =
       when
       {
-        isMe && hasTail   -> Pair(R.dimen.dimen10dip, R.dimen.dimen20dip)
+        isMe && hasTail   -> Pair(R.dimen.dimen10dip, R.dimen.dimen30dip)
         isMe && !hasTail  -> Pair(R.dimen.dimen10dip, R.dimen.dimen10dip)
-        !isMe && hasTail  -> Pair(R.dimen.dimen20dip, R.dimen.dimen10dip)
+        !isMe && hasTail  -> Pair(R.dimen.dimen30dip, R.dimen.dimen10dip)
         !isMe && !hasTail -> Pair(R.dimen.dimen10dip, R.dimen.dimen10dip)
         else              -> Pair(0, 0)
       }
