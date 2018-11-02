@@ -11,7 +11,8 @@ data class Message(val payload: String, val timestamp: Long, val isMe: Boolean)
       timestamp - message.timestamp > 60 * 60 * 1000
 
   fun hasTail(message: Message): Boolean =
-      isMe != message.isMe
+      isMe != message.isMe ||
+          (isMe == message.isMe && message.timestamp - timestamp > 20 * 1000)
 
   fun getBackground(hasTail: Boolean): Int =
       when
@@ -23,7 +24,7 @@ data class Message(val payload: String, val timestamp: Long, val isMe: Boolean)
         else              -> -1
       }
 
-  fun getPadding(hasTail:Boolean): Pair<Int, Int> =
+  fun getPadding(hasTail: Boolean): Pair<Int, Int> =
       when
       {
         isMe && hasTail   -> Pair(R.dimen.dimen10dip, R.dimen.dimen30dip)

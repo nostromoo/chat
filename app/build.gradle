@@ -27,14 +27,9 @@ dependencies {
   // Kotlin
   implementation("org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}")
 
-  // Anko
-  implementation("org.jetbrains.anko:anko-common:${anko_version}")
-
   // Android
   implementation("com.android.support:appcompat-v7:${appcompat_support_library_version}")
   implementation("com.android.support:recyclerview-v7:${appcompat_support_library_version}")
   implementation("com.android.support.constraint:constraint-layout:1.1.2")
 
-  // third party
-  implementation("net.danlew:android.joda:2.10.1")
 }

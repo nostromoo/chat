@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.50'
+    ext.kotlin_version = '1.2.70'
     repositories {
         google()
         jcenter()
@@ -26,8 +26,6 @@ ext
 {
     kotlin_version = "1.2.60"
     appcompat_support_library_version = "27.1.1"
-    anko_version = "0.10.3"
-    retrofit_version = "2.4.0"
 }
 
 task clean(type: Delete) {

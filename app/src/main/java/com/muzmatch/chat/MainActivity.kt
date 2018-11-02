@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.TextView
 import com.muzmatch.chat.bo.Message
@@ -38,6 +37,7 @@ class MainActivity
     {
       if (input.text.isNotEmpty())
       {
+        recyclerView.scrollToPosition(recyclerView.adapter.itemCount - 1)
         val message = Message(input.text.toString(), System.currentTimeMillis(), true)
         input.text.clear()
         val newMessage = createNewMessage(message)
@@ -48,8 +48,8 @@ class MainActivity
 
   private fun initList()
   {
+    //mock objects that simulate a chat from 1h ago
     val timestamp = System.currentTimeMillis() - 60 * 60 * 1000
-
     val messages = arrayListOf(
         Message("Hey !", timestamp, false),
         Message("how are you ?", timestamp, false),
@@ -64,7 +64,6 @@ class MainActivity
     (recyclerView.adapter as ChatAdapter).addItem(message)
     recyclerView.adapter.notifyDataSetChanged()
     recyclerView.scrollToPosition(recyclerView.adapter.itemCount - 1)
-    input.text.clear()
   }
 
   private fun createNewMessage(message: Message): View
@@ -93,9 +92,10 @@ class MainActivity
     val display = windowManager.defaultDisplay
     val size = Point()
     display.getSize(size)
-    val listBottom =  recyclerView.bottom
-    val finalYPosition = listBottom - resources.getDimensionPixelSize(R.dimen.dimen10dip) - (if (hasSection) resources.getDimensionPixelSize(R.dimen.dimen30dip) else 0) - resources.getDimensionPixelSize(R.dimen.dimen50dip)
-    ObjectAnimator.ofFloat(newMessage, "translationY", finalYPosition.toFloat()).apply {
+    val listBottom = recyclerView.bottom
+    val finalYPosition = (listBottom - resources.getDimensionPixelSize(R.dimen.dimen10dip) - (if (hasSection) resources.getDimensionPixelSize(R.dimen.dimen30dip) else 0) - resources.getDimensionPixelSize(R.dimen.dimen50dip)).toFloat()
+    val finalXPosition = (size.x - newMessage.measuredWidth).toFloat()
+    ObjectAnimator.ofFloat(newMessage, "translationY", finalYPosition).apply {
       duration = 1000
       start()
       addListener(object : Animator.AnimatorListener
@@ -123,7 +123,7 @@ class MainActivity
 
       })
     }
-    ObjectAnimator.ofFloat(newMessage, "translationX", (size.x - newMessage.measuredWidth).toFloat()).apply {
+    ObjectAnimator.ofFloat(newMessage, "translationX", finalXPosition).apply {
       duration = 1000
       start()
     }

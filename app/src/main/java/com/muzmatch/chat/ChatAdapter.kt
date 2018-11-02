@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.muzmatch.chat.bo.Message
 import kotlinx.android.synthetic.main.message_item.view.*
-import org.joda.time.DateTime
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -21,7 +22,7 @@ class ChatAdapter(val messages: ArrayList<Message>) :
   class MessageViewHolder(val view: View) : RecyclerView.ViewHolder(view)
   {
 
-    fun bind(message: Message, hasTail: Boolean, hasSection : Boolean)
+    fun bind(message: Message, hasTail: Boolean, hasSection: Boolean)
     {
       view.message.text = message.payload
       view.message.setTextColor(ContextCompat.getColor(view.context, message.getTextColor()))
@@ -39,8 +40,9 @@ class ChatAdapter(val messages: ArrayList<Message>) :
       if (hasSection)
       {
         view.date.visibility = View.VISIBLE
-        val dateTime = DateTime(message.timestamp)
-        view.date.text = "${dateTime.dayOfWeek().asText} ${dateTime.hourOfDay().asText}:${dateTime.minuteOfHour().asText}"
+        val date = Date(message.timestamp)
+        val dateFormat = SimpleDateFormat("EEEE HH:mm")
+        view.date.text = dateFormat.format(date)
       }
       else
       {
